@@ -22,7 +22,7 @@
 
 #define TAG "MQTT"
 
-extern xSemaphoreHandle conexaoMQTTSemaphore;
+extern xSemaphoreHandle mqttConnectionSemaphore;
 esp_mqtt_client_handle_t client;
 
 static esp_err_t mqtt_event_handler_cb(esp_mqtt_event_handle_t event)
@@ -34,7 +34,7 @@ static esp_err_t mqtt_event_handler_cb(esp_mqtt_event_handle_t event)
     {
     case MQTT_EVENT_CONNECTED:
         ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
-        xSemaphoreGive(conexaoMQTTSemaphore);
+        xSemaphoreGive(mqttConnectionSemaphore);
         msg_id = esp_mqtt_client_subscribe(client, "servidor/resposta", 0);
         break;
     case MQTT_EVENT_DISCONNECTED:
@@ -84,6 +84,8 @@ void mqtt_start()
 
 void mqtt_publish(char *topic, char *message)
 {
+    printf("TOPIC %s\n", topic);
+    printf("%s\n", message);
     int message_id = esp_mqtt_client_publish(client, topic, message, 0, 1, 0);
     ESP_LOGI(TAG, "Message sent, ID: %d", message_id);
 }
