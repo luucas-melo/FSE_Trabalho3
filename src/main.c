@@ -9,36 +9,10 @@
 
 #include "wifi.h"
 #include "mqtt.h"
-
-xSemaphoreHandle conexaoWifiSemaphore;
-xSemaphoreHandle conexaoMQTTSemaphore;
-
-void conectadoWifi(void *params)
-{
-    while (true)
-    {
-        if (xSemaphoreTake(conexaoWifiSemaphore, portMAX_DELAY))
-        {
-            // Processamento Internet
-            mqtt_start();
-        }
-    }
-}
-
-void trataComunicacaoComServidor(void *params)
-{
-    char mensagem[50];
-    if (xSemaphoreTake(conexaoMQTTSemaphore, portMAX_DELAY))
-    {
-        while (true)
-        {
-            float temperatura = 20.0 + (float)rand() / (float)(RAND_MAX / 10.0);
-            sprintf(mensagem, "temperatura1: %f", temperatura);
-            mqtt_publish("sensores/temperatura", mensagem);
-            vTaskDelay(3000 / portTICK_PERIOD_MS);
-        }
-    }
-}
+#include "cJSON.h"
+#include "dht_sensor.h"
+#include "hal/gpio_types.h"
+#include "connection.h"
 
 void app_main(void)
 {
@@ -51,10 +25,10 @@ void app_main(void)
     }
     ESP_ERROR_CHECK(ret);
 
-    conexaoWifiSemaphore = xSemaphoreCreateBinary();
-    conexaoMQTTSemaphore = xSemaphoreCreateBinary();
+    wifiConnectionSemaphore = xSemaphoreCreateBinary();
+    mqttConnectionSemaphore = xSemaphoreCreateBinary();
     wifi_start();
 
-    xTaskCreate(&conectadoWifi, "Conexão ao MQTT", 4096, NULL, 1, NULL);
-    xTaskCreate(&trataComunicacaoComServidor, "Comunicação com Broker", 4096, NULL, 1, NULL);
+    xTaskCreate(&wifiConnection, "MQTT connection", 4096, NULL, 1, NULL);
+    xTaskCreate(&handleBrokerCommunication, "Broker communication", 4096, NULL, 1, NULL);
 }
