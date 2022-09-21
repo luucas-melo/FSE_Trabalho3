@@ -33,7 +33,7 @@ void taskReadDht11(void *key)
     while (true)
     {
 
-        vTaskDelay(10000 / portTICK_PERIOD_MS);
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
         dht11_data = DHT11_read();
 
         // printf("STATUS %d %d\n", dht11_data.status);
@@ -44,15 +44,16 @@ void taskReadDht11(void *key)
 
             if (isTemperature)
             {
-
-                mqtt_publish_dht("v1/devices/me/telemetry", (char *)key, dht11_data.temperature);
+                if (dht11_data.temperature != 0)
+                    mqtt_publish_dht("v1/devices/me/telemetry", (char *)key, dht11_data.temperature);
                 ESP_LOGI(TAG, "temperature: %d", dht11_data.temperature);
             }
 
             else
             {
 
-                mqtt_publish_dht("v1/devices/me/telemetry", (char *)key, dht11_data.humidity);
+                if (dht11_data.humidity != 0)
+                    mqtt_publish_dht("v1/devices/me/telemetry", (char *)key, dht11_data.humidity);
                 ESP_LOGI(TAG, "humidity: %d", dht11_data.humidity);
             }
         }
