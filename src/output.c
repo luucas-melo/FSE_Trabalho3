@@ -1,15 +1,15 @@
-
-#define LED_PIN GPIO_NUM_2
-
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/queue.h"
 #include "driver/ledc.h"
 #include "driver/gpio.h"
-
 #include "esp_log.h"
-
 #include "output.h"
+#include "cJSON.h"
+#include "json_util.h"
+#include "mqtt.h"
+
+#define LED_PIN GPIO_NUM_2
 
 xQueueHandle output_queue;
 
@@ -24,7 +24,7 @@ void led_loop()
         {
 
             printf("intensity ===== %d", intensity);
-            ESP_LOGI(TAG, "Pin dimmable %d is %d", LED_PIN, intensity);
+            ESP_LOGI(TAG, "PIN %d intensity is %d", LED_PIN, intensity);
             ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, intensity * 255 / 100);
             ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
         }
@@ -57,8 +57,20 @@ void led_config()
     xTaskCreate(&led_loop, "led_loop", 4096, NULL, 1, NULL);
 }
 
-void led_set_state(int value)
+void led_set_intensity(int value)
 {
-
     xQueueSend(output_queue, &value, portMAX_DELAY);
+}
+
+void handle_touch_sensor(char *topic, const char *key, int payload)
+{
+    cJSON *json_message = NULL;
+
+    json_message = json_publishObject(key, payload);
+
+    if (json_message == NULL)
+        return;
+
+    mqtt_publish(topic, cJSON_Print(json_message));
+    cJSON_Delete(json_message);
 }

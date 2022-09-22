@@ -2,11 +2,8 @@
 #ifndef OUTPUT_H_
 #define OUTPUT_H_
 
-void led_blink(double intensity);
-// void output_setup();
-
 void led_config();
-void led_set_state(int value);
-// xSemaphoreHandle outputSemaphore;
+void led_set_intensity(int intensity);
+void handle_touch_sensor(char *topic, const char *key, int payload);
 
 #endif /* OUTPUT_H_ */
