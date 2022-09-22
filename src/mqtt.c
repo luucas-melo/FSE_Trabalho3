@@ -125,8 +125,8 @@ void mqtt_handle_data(esp_mqtt_event_handle_t event)
         strcpy(topic_response, PUBLISH_CLIENT_RPC);
         strcat(topic_response, requestId);
         int intensity = atoi(cJSON_Print(params));
-        // led_blink(intensity);
+
         ESP_LOGI(TAG, "INTENSIDADE :%d", intensity);
-        led_set_state(intensity);
+        led_set_intensity(intensity);
     }
 }
