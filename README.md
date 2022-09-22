@@ -36,3 +36,12 @@ $ platformio run --target upload --target monitor --environment esp32doit-devkit
 
 5. O dashboard com a leitura dos dispositivos pode ser visualizado em [Ailamar-Lucas-Dashboard.](http://164.41.98.25:443/dashboards/6cd45ee0-360f-11ed-be92-e3a443145aec)
 
+## Dashboard
+
+### Temperatura e humidade
+![image](https://user-images.githubusercontent.com/48891167/191668391-da5a0af6-d44b-4020-add6-699f7623cb84.png)
+
+### Sensor de toque e led
+![image](https://user-images.githubusercontent.com/48891167/191668588-c04ff8ab-69b2-4fe4-8f43-848d64d9c7f4.png)
+
+
