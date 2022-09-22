@@ -17,10 +17,8 @@ Os componentes do sistema permitem:
 
 ## Vídeo de demonstração 
 
-<div align="center">
-   <iframe width="560" height="315" src="https://youtu.be/JCy7crpBh_U" frameborder="0" allowfullscreen>
-   </iframe>
-</div>
+
+[![Vídeo de demonstrção do projeto](/assets/dashboard-full.JPG)](https://youtu.be/JCy7crpBh_U "FSE Trabalho 3")
 
 ## Instruções de uso
 
